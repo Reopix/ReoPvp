@@ -1,0 +1,11 @@
+armor-durability-reduction-factor: 1.4 # скорость ломание брони
+disable-attack-cooldown: true
+max-cps: 15 # абу бандит
+sword-damage:
+  wooden: 4.0
+  stone: 5.0
+  iron: 6.0
+  golden: 4.0
+  diamond: 7.0
+  netherite: 12.5
+  trident: 7.0

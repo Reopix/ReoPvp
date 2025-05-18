@@ -1,0 +1,5 @@
+name: ReoPvp
+version: '${project.version}'
+main: org.reopix.frpvp.ReoPvp
+api-version: '1.17'
+author: Reopix

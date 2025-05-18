@@ -1,0 +1,5 @@
+name: ReoPvp
+version: '1.0-SNAPSHOT'
+main: org.reopix.frpvp.ReoPvp
+api-version: '1.17'
+author: Reopix
