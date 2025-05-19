@@ -8,10 +8,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -64,7 +67,7 @@ public final class ReoPvp extends JavaPlugin implements Listener {
                 final long expirationTime = currentTime - 1000; // 1 секунда
 
                 playerClicks.forEach((uuid, clicks) ->
-                    clicks.removeIf(clickTime -> clickTime < expirationTime)
+                        clicks.removeIf(clickTime -> clickTime < expirationTime)
                 );
 
                 playerClicks.entrySet().removeIf(entry -> entry.getValue().isEmpty());
@@ -154,5 +157,44 @@ public final class ReoPvp extends JavaPlugin implements Listener {
 
             event.setDamage(1);
         }
+    }
+
+    @EventHandler
+    public void onPlayerGainExperience(PlayerExpChangeEvent event) {
+        int xpAmount = event.getAmount();
+        if (xpAmount <= 0) return;
+        Player player = event.getPlayer();
+        int repairAmount = Math.max(1, (int)(xpAmount * configManager.getArmorRepairXpFactor() / 100.0));
+        ItemStack[] armorItems = player.getInventory().getArmorContents();
+        ItemStack mainHand = player.getInventory().getItemInMainHand();
+        ItemStack offHand = player.getInventory().getItemInOffHand();
+        boolean repaired = false;
+        for (ItemStack item : armorItems) {
+            if (isArmorItem(item)) {
+                repaired |= repairArmorItem(item, repairAmount);
+            }
+        }
+
+        if (isArmorItem(mainHand)) repaired |= repairArmorItem(mainHand, repairAmount);
+        if (isArmorItem(offHand)) repaired |= repairArmorItem(offHand, repairAmount);
+
+        if (repaired) player.updateInventory();
+    }
+
+    private boolean isArmorItem(ItemStack item) {
+        return item != null && ConfigManager.ARMOR.contains(item.getType());
+    }
+
+    private boolean repairArmorItem(ItemStack item, int repairAmount) {
+        if (item == null || !item.hasItemMeta()) return false;
+        ItemMeta meta = item.getItemMeta();
+        if (!(meta instanceof Damageable)) return false;
+        Damageable damageable = (Damageable) meta;
+        int damage = damageable.getDamage();
+        if (damage <= 0) return false;
+        damageable.setDamage(Math.max(0, damage - repairAmount));
+        item.setItemMeta(meta);
+
+        return true;
     }
 }

@@ -18,6 +18,7 @@ public class ConfigManager {
     private FileConfiguration config;
     
     @Getter private double armorDurabilityReductionFactor = 0.01;
+    @Getter private double armorRepairXpFactor = 1.0;
     @Getter private boolean attackCooldownDisabled = true;
     @Getter private int maxCPS = 15;
     @Getter private final Map<Material, Double> swordDamageMap = new EnumMap<>(Material.class);
@@ -76,6 +77,7 @@ public class ConfigManager {
         config = plugin.getConfig();
         
         armorDurabilityReductionFactor = config.getDouble("armor-durability-reduction-factor", 0.01);
+        armorRepairXpFactor = config.getDouble("armor-repair-xp-factor", 1.0);
         attackCooldownDisabled = config.getBoolean("disable-attack-cooldown", true);
         maxCPS = config.getInt("max-cps", 15);
         loadSwordDamage();
@@ -105,6 +107,7 @@ public class ConfigManager {
     public void createDefaultConfig() {
         config = plugin.getConfig();
         config.addDefault("armor-durability-reduction-factor", 0.01);
+        config.addDefault("armor-repair-xp-factor", 1.0);
         config.addDefault("disable-attack-cooldown", true);
         config.addDefault("max-cps", 15);
         
@@ -134,5 +137,9 @@ public class ConfigManager {
     
     public double getArmorDurabilityReductionFactor() {
         return armorDurabilityReductionFactor;
+    }
+    
+    public double getArmorRepairXpFactor() {
+        return armorRepairXpFactor;
     }
 } 

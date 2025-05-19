@@ -1,4 +1,5 @@
 armor-durability-reduction-factor: 1.4 # скорость ломание брони
+armor-repair-xp-factor: 4.0 # скорость починки брони за опыт (чем больше, тем быстрее)
 disable-attack-cooldown: true
 max-cps: 15 # абу бандит
 sword-damage:
